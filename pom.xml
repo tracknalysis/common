@@ -74,6 +74,10 @@ Authors: David Valeri
     </repository>
   </repositories>
   
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
