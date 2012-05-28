@@ -29,6 +29,7 @@ public abstract class GracefulShutdownThread extends Thread {
     private long stopIncrement = 1000;
     
     protected volatile boolean run = true;
+    protected volatile boolean done = true;
     
     public GracefulShutdownThread() {
         super();
@@ -63,6 +64,12 @@ public abstract class GracefulShutdownThread extends Thread {
     public GracefulShutdownThread(ThreadGroup group, String name) {
         super(group, name);
     }
+    
+    @Override
+    public void run() {
+        super.run();
+        done = true;
+    }
 
     public synchronized boolean cancel() {
         if (this.isAlive()) {
@@ -70,7 +77,7 @@ public abstract class GracefulShutdownThread extends Thread {
             
             run = false;
             
-            for (long time = 0; time < stopTimeout && this.isAlive(); time += stopIncrement) {
+            for (long time = 0; time < stopTimeout && !done; time += stopIncrement) {
                 try {
                     Thread.sleep(stopIncrement);
                 } catch (InterruptedException e) {
@@ -78,7 +85,7 @@ public abstract class GracefulShutdownThread extends Thread {
                 }
             }
             
-            if (this.isAlive()) {
+            if (!done) {
                 LOG.warn("Graceful shutdown of {} thread failed.  Attempting "
                         + "less subtle options.  Expect some error messages to follow.", getName());
             
@@ -90,7 +97,7 @@ public abstract class GracefulShutdownThread extends Thread {
                     LOG.warn("Interrupted while attempting clean shutdown of {} thread.", getName());
                 }
                 
-                if (this.isAlive()) {
+                if (!done) {
                     LOG.error("Forceable shutdown of {} thread failed.  Giving up.", getName());
                 } else {
                     LOG.debug("Forceable shutdown of {} thread succeeded.", getName());
