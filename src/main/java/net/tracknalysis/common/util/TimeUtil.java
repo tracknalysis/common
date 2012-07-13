@@ -45,8 +45,8 @@ public final class TimeUtil {
         int minute = cal.get(GregorianCalendar.MINUTE);
         int second = cal.get(GregorianCalendar.SECOND);
         
-        long timeInDay = (hour * 60 * 60 * 1000) + (minute * 60 * 1000)
-                + (second * 1000) + cal.get(GregorianCalendar.MILLISECOND);
+        long timeInDay = (hour * MS_IN_HOUR) + (minute * MS_IN_MINUTE)
+                + (second * MS_IN_SECOND) + cal.get(GregorianCalendar.MILLISECOND);
         
         return timeInDay;
     }
@@ -57,5 +57,43 @@ public final class TimeUtil {
         long timeInDay = getMillisecondInDay(cal);
         
         return cal.getTimeInMillis() - timeInDay;
+    }
+    
+    public static String formatDuration(long duration, boolean useHours, boolean includeFractionalSeconds) {
+        
+        long absDuration = Math.abs(duration);
+        
+        long hours = absDuration / TimeUtil.MS_IN_HOUR;
+        long minutes = (absDuration % TimeUtil.MS_IN_HOUR) / TimeUtil.MS_IN_MINUTE;
+        long seconds = (absDuration % TimeUtil.MS_IN_HOUR % TimeUtil.MS_IN_MINUTE) / TimeUtil.MS_IN_SECOND;
+        long ms = (absDuration % TimeUtil.MS_IN_HOUR % TimeUtil.MS_IN_MINUTE % TimeUtil.MS_IN_SECOND);
+        
+        StringBuilder builder = new StringBuilder();
+        
+        if (duration < 0) {
+            builder.append("-");
+        }
+        
+        if (hours != 0 && useHours) {
+            builder.append(hours).append(":");
+        } else {
+            minutes += hours * 60;
+        }
+        
+        String minuteFormat;
+        if (hours != 0) {
+            minuteFormat = "%02d";
+        } else {
+            minuteFormat = "%d";
+        }
+        
+        builder.append(String.format(minuteFormat, minutes)).append(":")
+                .append(String.format("%02d", seconds));
+        
+        if (includeFractionalSeconds) {
+            builder.append(".").append(String.format("%03d", ms));
+        }
+        
+        return builder.toString();
     }
 }
