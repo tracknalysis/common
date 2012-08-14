@@ -21,9 +21,9 @@ package net.tracknalysis.common.notification;
  * 
  * @author David Valeri
  */
-public interface NotificationStrategy {
+public interface NotificationStrategy<T extends NotificationType> {
     
-    void sendNotification(NotificationType notificationType);
+    void sendNotification(T notificationType);
     
-    void sendNotification(NotificationType notificationType, Object messageBody);
+    void sendNotification(T notificationType, Object messageBody);
 }

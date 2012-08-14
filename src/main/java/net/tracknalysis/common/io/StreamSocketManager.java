@@ -20,23 +20,37 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
+ * A "socket manager" based on existing streams.
+ * 
  * @author David Valeri
  */
 public class StreamSocketManager implements SocketManager {
     
     private final InputStream is;
     private final OutputStream os;
-    
+  
+    /**
+     * Creates a new instance.
+     *
+     * @param is the stream to provide in {@link #getInputStream()}
+     * @param os the stream to provide in {@link #getOutputStream()}
+     */
     public StreamSocketManager(InputStream is, OutputStream os) {
         this.is = is;
         this.os = os;
     }
 
+    /**
+     * No-op.
+     */
     @Override
     public void connect() throws IOException {
         // No-op
     }
 
+    /**
+     * No-op.
+     */
     @Override
     public void disconnect() throws IOException {
         // No-op

@@ -20,14 +20,14 @@ package net.tracknalysis.common.notification;
  *
  * @author David Valeri
  */
-public class NoOpNotificationStrategy implements NotificationStrategy {
+public class NoOpNotificationStrategy<T extends NotificationType> implements NotificationStrategy<T> {
 
     @Override
-    public void sendNotification(NotificationType notificationType) {
+    public void sendNotification(T notificationType) {
     }
 
     @Override
-    public void sendNotification(NotificationType notificationType,
+    public void sendNotification(T notificationType,
             Object messageBody) {
     }
 }
