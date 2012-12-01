@@ -29,7 +29,6 @@ public abstract class GracefulShutdownThread extends Thread {
     private long stopIncrement = 1000;
     
     protected volatile boolean run = true;
-    protected volatile boolean done = true;
     
     public GracefulShutdownThread() {
         super();
@@ -64,40 +63,39 @@ public abstract class GracefulShutdownThread extends Thread {
     public GracefulShutdownThread(ThreadGroup group, String name) {
         super(group, name);
     }
-    
-    @Override
-    public void run() {
-        super.run();
-        done = true;
-    }
 
+    /**
+     * Attempts to gracefully shutdown the thread if it is running.
+     *
+     * @return true if the thread shutdown
+     */
     public synchronized boolean cancel() {
-        if (this.isAlive()) {
+        if (isAlive()) {
             LOG.debug("Attempting graceful shutdown of {} thread.", getName());
             
             run = false;
             
-            for (long time = 0; time < stopTimeout && !done; time += stopIncrement) {
+            for (long time = 0; time < stopTimeout && !isAlive(); time += stopIncrement) {
                 try {
-                    Thread.sleep(stopIncrement);
+                	join(stopIncrement);
                 } catch (InterruptedException e) {
                     LOG.warn("Interrupted while attempting clean shutdown of {} thread.", getName());
                 }
             }
             
-            if (!done) {
+            if (isAlive()) {
                 LOG.warn("Graceful shutdown of {} thread failed.  Attempting "
                         + "less subtle options.  Expect some error messages to follow.", getName());
             
-                this.interrupt();
+                interrupt();
                 
                 try {
-                    Thread.sleep(500);
+                	join(stopIncrement);
                 } catch (InterruptedException e) {
                     LOG.warn("Interrupted while attempting clean shutdown of {} thread.", getName());
                 }
                 
-                if (!done) {
+                if (isAlive()) {
                     LOG.error("Forceable shutdown of {} thread failed.  Giving up.", getName());
                 } else {
                     LOG.debug("Forceable shutdown of {} thread succeeded.", getName());
