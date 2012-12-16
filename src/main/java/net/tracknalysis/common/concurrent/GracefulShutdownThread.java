@@ -28,7 +28,7 @@ public abstract class GracefulShutdownThread extends Thread {
     private long stopTimeout = 5000;
     private long stopIncrement = 1000;
     
-    protected volatile boolean run = true;
+    private volatile boolean keepRunning = true;
     
     public GracefulShutdownThread() {
         super();
@@ -63,6 +63,10 @@ public abstract class GracefulShutdownThread extends Thread {
     public GracefulShutdownThread(ThreadGroup group, String name) {
         super(group, name);
     }
+    
+    protected final boolean keepRunning() {
+    	return keepRunning;
+    }
 
     /**
      * Attempts to gracefully shutdown the thread if it is running.
@@ -73,7 +77,7 @@ public abstract class GracefulShutdownThread extends Thread {
         if (isAlive()) {
             LOG.debug("Attempting graceful shutdown of {} thread.", getName());
             
-            run = false;
+            keepRunning = false;
             
             for (long time = 0; time < stopTimeout && !isAlive(); time += stopIncrement) {
                 try {

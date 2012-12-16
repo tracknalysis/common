@@ -16,18 +16,14 @@
 package net.tracknalysis.common.notification;
 
 /**
- * An implementation that performs no notifications.
- *
+ * A simple interface for triggering lightweight notification events using a
+ * variety of underlying notification frameworks.
+ * 
  * @author David Valeri
  */
-public class NoOpNotificationStrategy<T extends NotificationType> implements NotificationStrategy<T> {
-
-    @Override
-    public void sendNotification(T notificationType) {
-    }
-
-    @Override
-    public void sendNotification(T notificationType,
-            Object messageBody) {
-    }
+public interface NotificationListener<T extends NotificationType> {
+    
+    void onNotification(T notificationType);
+    
+    void onNotification(T notificationType, Object messageBody);
 }

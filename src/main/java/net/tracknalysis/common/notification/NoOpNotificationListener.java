@@ -16,10 +16,18 @@
 package net.tracknalysis.common.notification;
 
 /**
- * Defines the interface for notification types used by {@link NotificationListener}.
- * 
+ * An implementation that performs no notifications.
+ *
  * @author David Valeri
  */
-public interface NotificationType {
-    int getNotificationTypeId();
+public class NoOpNotificationListener<T extends NotificationType> implements NotificationListener<T> {
+
+    @Override
+    public void onNotification(T notificationType) {
+    }
+
+    @Override
+    public void onNotification(T notificationType,
+            Object messageBody) {
+    }
 }

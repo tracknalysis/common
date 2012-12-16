@@ -13,13 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.tracknalysis.common.notification;
+package net.tracknalysis.common.io.command;
 
 /**
- * Defines the interface for notification types used by {@link NotificationListener}.
- * 
+ * Interface for a manager that handles processing of enqueued {@link IoCommand}s.
+ *
  * @author David Valeri
  */
-public interface NotificationType {
-    int getNotificationTypeId();
+public interface IoCommandManager {
+	
+	/**
+	 * Starts the manager.
+	 */
+	void start();
+	
+	/**
+	 * Stops the manager immediately, clearing the command queue of any exiting commands.
+	 */
+	void stop();
+	
+	/**
+	 * Enqueues a command for processing in the future.
+	 *
+	 * @param ioCommand the command to enqueue
+	 * @return true if the command was accepted, false otherwise
+	 *
+	 * @throws IllegalStateException if the manager is not running
+	 */
+	boolean enqueue(IoCommand ioCommand) throws IllegalStateException;
 }

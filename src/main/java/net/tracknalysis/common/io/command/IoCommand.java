@@ -13,13 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.tracknalysis.common.notification;
+package net.tracknalysis.common.io.command;
+
+import net.tracknalysis.common.io.IoManager;
 
 /**
- * Defines the interface for notification types used by {@link NotificationListener}.
- * 
+ * Interface for a command that can be queued in a {@link IoCommandManager}.
+ *
  * @author David Valeri
  */
-public interface NotificationType {
-    int getNotificationTypeId();
+public interface IoCommand {
+	
+	/**
+	 * Executes the command against {@code ioManager}.  Any thrown exception
+	 * will be logged, but otherwise ignored.  It is the responsibility of
+	 * the implementation to manage callbacks for success and failure scenarios.
+	 *
+	 * @param ioManager the IO manager to use while performing the IO operations
+	 */
+	void execute(IoManager ioManager);
 }

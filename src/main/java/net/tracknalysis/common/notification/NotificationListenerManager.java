@@ -16,14 +16,16 @@
 package net.tracknalysis.common.notification;
 
 /**
- * A simple interface for triggering lightweight notification events using a
- * variety of underlying notification frameworks.
- * 
+ * Interface for a {@link NotificationListenerRegistry} that provides facilities for sending notifications
+ * to registered listener.
+ *
  * @author David Valeri
+ *
+ * @param <T> the type of the notification
  */
-public interface NotificationStrategy<T extends NotificationType> {
-    
-    void sendNotification(T notificationType);
-    
-    void sendNotification(T notificationType, Object messageBody);
+public interface NotificationListenerManager<T extends NotificationType> extends NotificationListenerRegistry<T> {
+
+	public abstract void sendNotification(T notificationType);
+
+	public abstract void sendNotification(T notificationType, Object body);
 }

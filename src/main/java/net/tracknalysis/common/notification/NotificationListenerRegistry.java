@@ -16,10 +16,12 @@
 package net.tracknalysis.common.notification;
 
 /**
- * Defines the interface for notification types used by {@link NotificationListener}.
- * 
+ * Interface for a registry of notification listeners.
+ *
  * @author David Valeri
+ *
+ * @param <T> the notification type that the listener handles
  */
-public interface NotificationType {
-    int getNotificationTypeId();
+public interface NotificationListenerRegistry<T extends NotificationType>
+		extends ListenerRegistry<NotificationListener<T>> {
 }
