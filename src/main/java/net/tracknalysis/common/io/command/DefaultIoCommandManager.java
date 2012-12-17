@@ -39,22 +39,25 @@ public class DefaultIoCommandManager implements IoCommandManager {
 	private final BlockingQueue<IoCommand> commandQueue = new LinkedBlockingDeque<IoCommand>(10);
 	private final IoManager ioManager;
 	private CommandThread commandThread;
+	private volatile boolean running;
 	
 	public DefaultIoCommandManager(IoManager ioManager) {
 		this.ioManager = ioManager;
 	}
 	
 	public synchronized void start() {
-		if (commandThread == null) {
+		if (!running) {
 			commandThread = new CommandThread();
 			LOG.info("{}: Starting new command thread: {}.", this, commandThread.getName());
 			commandThread.start();
 			LOG.info("{}: Starting new command thread: {}.", this, commandThread.getName());
+			running = true;
 		}
 	}
 	
 	public synchronized void stop() {
-		if (commandThread != null) {
+		if (running) {
+			running = false;
 			LOG.info("{}: Stopping command thread: {}.", this, commandThread.getName());
 			commandQueue.clear();
 			commandThread.cancel();
@@ -65,7 +68,7 @@ public class DefaultIoCommandManager implements IoCommandManager {
 
 	@Override
 	public synchronized boolean enqueue(IoCommand ioCommand) {
-		if (commandThread != null) {
+		if (running) {
 			return commandQueue.offer(ioCommand);
 		} else {
 			throw new IllegalArgumentException("The manager is not running.");
